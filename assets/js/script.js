@@ -158,7 +158,6 @@ document.querySelector("#submit-high-score").addEventListener("click", function 
     
     if (playerInitials!==" ") {
         playerInitials=playerInitials.trim().toUpperCase();
-        alert(playerInitials)
         //set object with high score
         var currentScore = {
             initials: playerInitials,
