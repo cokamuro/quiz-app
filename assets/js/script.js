@@ -97,15 +97,20 @@ function startQuiz() {
     updateCountdownTimer();
     displayQuestion();
     var timerCountdown = setInterval(function () {
-        timeRemain--;
-        updateCountdownTimer();
-        if (timeRemain <= 5) {
-            elCountdownDiv.style.color = "red";
-        }
-        if (timeRemain == 0) {
+        if (myState==1){
+            timeRemain--;
+            updateCountdownTimer();
+            if (timeRemain <= 5) {
+                elCountdownDiv.style.color = "red";
+            }
+            if (timeRemain == 0) {
+                clearInterval(timerCountdown);
+                endQuiz();
+            }
+        } else {
             clearInterval(timerCountdown);
-            endQuiz();
         }
+        
     }, 1000);
 }
 
