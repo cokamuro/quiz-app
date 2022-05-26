@@ -100,7 +100,7 @@ function startQuiz(){
         timeRemain--;
         updateCountdownTimer();
         if(timeRemain<=5){
-            elCountdownDiv.style.backColor="red";
+            elCountdownDiv.style.color="red";
         }
         if(timeRemain == 0) {
           clearInterval(timerCountdown);
@@ -148,6 +148,8 @@ elAnswers.addEventListener("click", function(event) {
     }
   });
 document.querySelector("#submit-high-score").addEventListener("click", function() {
+    var highScores = [];
+    
     //set object with high score
     var currentScore = {
         initials: document.querySelector("#playerInitials").value,
@@ -155,10 +157,17 @@ document.querySelector("#submit-high-score").addEventListener("click", function(
     }
 
     //read existing high scores
-    var highScores = JSON.parse(localStorage.getItem("highScores")) || [];
+    var existingScores = localStorage.getItem("highScores");
+    if(existingScores!=""){
+        highScores = JSON.parse(existingScores) || [];
+    }   
     
     //add object to high scores
     highScores.push(currentScore);
+
+    highScores.sort((a,b)=> {
+        return b.score - a.score;
+    })
 
     //store high scores
     localStorage.setItem("highScores", JSON.stringify(highScores));
