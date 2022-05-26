@@ -154,8 +154,11 @@ elAnswers.addEventListener("click", function (event) {
 });
 document.querySelector("#submit-high-score").addEventListener("click", function () {
     var highScores = [];
-    var playerInitials = document.querySelector("#playerInitials").value;
-    if (playerInitials.length>0) {
+    var playerInitials = document.querySelector("#playerInitials").value+" ";
+    
+    if (playerInitials!==" ") {
+        playerInitials=playerInitials.trim().toUpperCase();
+        alert(playerInitials)
         //set object with high score
         var currentScore = {
             initials: playerInitials,
