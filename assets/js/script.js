@@ -1,13 +1,16 @@
 var myState = 0;  //0=start, 1=quiz, 2=end  Enum?
 var currentQuestionNumber = 0;
-var timeRemain = 15; 
+var timeRemain = 30; 
 var questions=[];
+var answersCorrect=0;
 
 var elStart=document.querySelector("#quiz-intro");
 var elQuiz=document.querySelector("#quiz-actual");
 var elEnd=document.querySelector("#quiz-end");
 var elQuestionText=document.querySelector("#question-text");
 var elAnswers=document.querySelector("#answers");
+var elCorrectQuestions=document.querySelector("#correct-questions");
+var elScore=document.querySelector("#score");
 
 function displayState(){
 
@@ -88,29 +91,6 @@ function displayQuestion(){
     }
 }
 
-document.querySelector("#start-quiz-button").addEventListener("click", startQuiz);
-elAnswers.addEventListener("click", function(event) {
-    var element = event.target;
-    
-    if(element.matches("li")){  
-        //evaluate if the answer was correct
-        if(questions[currentQuestionNumber].correctAnswer==element.dataset.selection){
-            alert("correct");
-        }else{
-            alert("incorrect");
-        }
-
-        //navigate to the next question, or to the end of the quiz
-        if(currentQuestionNumber!=questions.length-1){
-            currentQuestionNumber++;
-            displayQuestion();
-        } else {
-            myState=2;
-            endQuiz();
-        }
-    }
-  });
-
 function startQuiz(){
     myState=1;
     displayState();
@@ -133,7 +113,54 @@ function updateCountdownTimer(){
 function endQuiz(){
     myState=2;
     displayState();
+
+    //update result page spans
+    elScore.textContent=timeRemain;
+    elCorrectQuestions.textContent=answersCorrect;
 }
+
+document.querySelector("#start-quiz-button").addEventListener("click", startQuiz);
+elAnswers.addEventListener("click", function(event) {
+    var element = event.target;
+    
+    if(element.matches("li")){  
+        //evaluate if the answer was correct
+        if(questions[currentQuestionNumber].correctAnswer==element.dataset.selection){
+            answersCorrect++;
+        }else{
+            timeRemain-=5;
+        }
+
+        //navigate to the next question, or to the end of the quiz
+        if(currentQuestionNumber!=questions.length-1){
+            currentQuestionNumber++;
+            displayQuestion();
+        } else {
+            myState=2;
+            endQuiz();
+        }
+    }
+  });
+document.querySelector("#submit-high-score").addEventListener("click", function() {
+    //set object with high score
+    var currentScore = {
+        initials: document.querySelector("#playerInitials").value,
+        score: timeRemain
+    }
+
+    //read existing high scores
+    var highScores = JSON.parse(localStorage.getItem("highScores")) || [];
+    
+    //add object to high scores
+    highScores.push(currentScore);
+
+    //store high scores
+    localStorage.setItem("highScores", JSON.stringify(highScores));
+
+    //navigate to high scores page
+    window.location.replace("highscores.html");
+});
+
 
 init();
 
