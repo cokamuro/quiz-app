@@ -1,6 +1,6 @@
 var myState = 0;  //0=start, 1=quiz, 2=end  Enum?
 var currentQuestionNumber = 0;
-var timeRemain = 5; 
+var timeRemain = 15; 
 var questions=[];
 
 var elStart=document.querySelector("#quiz-intro");
@@ -32,8 +32,8 @@ function setupQuestions(){
     };
     addQuestion(question);
     question = {
-        text: "question 2",
-        answers: ["a","b","c","d"],
+        text: "The color #ffffff is:",
+        answers: ["black","white","50% grey","red","green","blue"],
         correctAnswer: 1
     };
     addQuestion(question);
@@ -64,13 +64,21 @@ function addQuestion(thisQuestion){
 function displayQuestion(){
     var currentQuestion=questions[currentQuestionNumber];
     console.log(elQuestionText,currentQuestion.text)
-    for(var i=0;i<elAnswers.children.length;i++){
-        elAnswers.childNodes[i].removeChild();
-    }
+    
+    //clear out any existing li elements on the ol
+    while (elAnswers.children.length !=0){
+        elAnswers.removeChild(elAnswers.childNodes[0]);
+      }
+
+    //set the question text
     elQuestionText.textContent=currentQuestion.text;
     var answer
+
+    //add the answers as li elements to the ol
     for(var i=0;i<currentQuestion.answers.length;i++){
         answer = document.createElement("li");
+        //add the selection number to the data tags so the click event
+        //can evaluate if the selection was correct
         answer.dataset.selection=i;
         answer.textContent = currentQuestion.answers[i];
 
@@ -83,10 +91,14 @@ elAnswers.addEventListener("click", function(event) {
     var element = event.target;
     
     console.log(element);
-    if(element.matches("li")){
-      
-      alert(element.dataset.selection);
-      
+    if(element.matches("li")){  
+        if(currentQuestionNumber!=questions.length-1){
+            currentQuestionNumber++;
+            displayQuestion();
+        } else {
+            myState=2;
+            endQuiz();
+        }
     }
   });
 
