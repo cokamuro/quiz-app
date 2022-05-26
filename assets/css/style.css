@@ -108,4 +108,8 @@ table {
     color:rgb(19, 81, 174);
   }
   
+  a {
+    text-align: center;
+      text-decoration: none;
+  }
   
