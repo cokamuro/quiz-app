@@ -11,6 +11,7 @@ var elQuestionText=document.querySelector("#question-text");
 var elAnswers=document.querySelector("#answers");
 var elCorrectQuestions=document.querySelector("#correct-questions");
 var elScore=document.querySelector("#score");
+var elCountdownDiv=document.querySelector("#countdown-div");
 
 function displayState(){
 
@@ -69,7 +70,6 @@ function addQuestion(thisQuestion){
 
 function displayQuestion(){
     var currentQuestion=questions[currentQuestionNumber];
-    console.log(elQuestionText,currentQuestion.text)
     
     //clear out any existing li elements on the ol
     while (elAnswers.children.length !=0){
@@ -99,6 +99,9 @@ function startQuiz(){
     var timerCountdown = setInterval(function() {
         timeRemain--;
         updateCountdownTimer();
+        if(timeRemain<=5){
+            elCountdownDiv.style.backColor="red";
+        }
         if(timeRemain == 0) {
           clearInterval(timerCountdown);
         endQuiz();
@@ -107,7 +110,10 @@ function startQuiz(){
 }
 
 function updateCountdownTimer(){
-    document.querySelector("#countdown-timer").textContent=timeRemain;
+    var suffix=" seconds"
+
+    if(timeRemain==1){suffix=" second"}
+    document.querySelector("#countdown-timer").textContent=timeRemain+suffix+" remaining";
 }
 
 function endQuiz(){
