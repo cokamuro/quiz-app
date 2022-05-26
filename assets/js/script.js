@@ -1,46 +1,46 @@
 var myState = 0;  //0=start, 1=quiz, 2=end  Enum?
 var currentQuestionNumber = 0;
-var timeRemain = 30; 
-var questions=[];
-var answersCorrect=0;
+var timeRemain = 30;
+var questions = [];
+var answersCorrect = 0;
 
-var elStart=document.querySelector("#quiz-intro");
-var elQuiz=document.querySelector("#quiz-actual");
-var elEnd=document.querySelector("#quiz-end");
-var elQuestionText=document.querySelector("#question-text");
-var elAnswers=document.querySelector("#answers");
-var elCorrectQuestions=document.querySelector("#correct-questions");
-var elScore=document.querySelector("#score");
-var elCountdownDiv=document.querySelector("#countdown-div");
+var elStart = document.querySelector("#quiz-intro");
+var elQuiz = document.querySelector("#quiz-actual");
+var elEnd = document.querySelector("#quiz-end");
+var elQuestionText = document.querySelector("#question-text");
+var elAnswers = document.querySelector("#answers");
+var elCorrectQuestions = document.querySelector("#correct-questions");
+var elScore = document.querySelector("#score");
+var elCountdownDiv = document.querySelector("#countdown-div");
 
-function displayState(){
+function displayState() {
 
-    elStart.style.display='none';
-    elQuiz.style.display='none';
-    elEnd.style.display='none';
-    if(myState ==0){elStart.style.display = 'block'};
-    if(myState ==1){elQuiz.style.display = 'block'};
-    if(myState ==2){elEnd.style.display = 'block'};
+    elStart.style.display = 'none';
+    elQuiz.style.display = 'none';
+    elEnd.style.display = 'none';
+    if (myState == 0) { elStart.style.display = 'block' };
+    if (myState == 1) { elQuiz.style.display = 'block' };
+    if (myState == 2) { elEnd.style.display = 'block' };
 }
 
-function init(){
+function init() {
     displayState();
     setupQuestions();
 }
 
-function setupQuestions(){
+function setupQuestions() {
     //pushing individual question objects into the questions collection
     //struct includes question text, an array of answers, and the array index
     //of the correct answer
     var question = {
         text: "What are the units of time specified in the setInterval function?",
-        answers: ["microseconds","seconds","milliseconds","minutes"],
+        answers: ["microseconds", "seconds", "milliseconds", "minutes"],
         correctAnswer: 2
     };
     addQuestion(question);
     question = {
         text: "The color #ffffff is:",
-        answers: ["black","white","50% grey","red","green","blue"],
+        answers: ["black", "white", "50% grey", "red", "green", "blue"],
         correctAnswer: 1
     };
     addQuestion(question);
@@ -52,128 +52,133 @@ function setupQuestions(){
     addQuestion(question);
     question = {
         text: "A function that calls itself is",
-        answers: ["encaspulated","a lambda","lonely","recursive"],
+        answers: ["encaspulated", "a lambda", "lonely", "recursive"],
         correctAnswer: 3
     };
     addQuestion(question);
     question = {
         text: "The line termination character for lines of code in JavaScript is:",
-        answers: [";","}","/n",")"],
+        answers: [";", "}", "/n", ")"],
         correctAnswer: 0
     };
     addQuestion(question);
 }
 
-function addQuestion(thisQuestion){
+function addQuestion(thisQuestion) {
     questions.push(thisQuestion);
 }
 
-function displayQuestion(){
-    var currentQuestion=questions[currentQuestionNumber];
-    
+function displayQuestion() {
+    var currentQuestion = questions[currentQuestionNumber];
+
     //clear out any existing li elements on the ol
-    while (elAnswers.children.length !=0){
+    while (elAnswers.children.length != 0) {
         elAnswers.removeChild(elAnswers.childNodes[0]);
-      }
+    }
 
     //set the question text
-    elQuestionText.textContent=currentQuestion.text;
+    elQuestionText.textContent = currentQuestion.text;
     var answer
 
     //add the answers as li elements to the ol
-    for(var i=0;i<currentQuestion.answers.length;i++){
+    for (var i = 0; i < currentQuestion.answers.length; i++) {
         answer = document.createElement("li");
         //add the selection number to the data tags so the click event
         //can evaluate if the selection was correct
-        answer.dataset.selection=i;
+        answer.dataset.selection = i;
         answer.textContent = currentQuestion.answers[i];
         elAnswers.appendChild(answer);
     }
 }
 
-function startQuiz(){
-    myState=1;
+function startQuiz() {
+    myState = 1;
     displayState();
     updateCountdownTimer();
     displayQuestion();
-    var timerCountdown = setInterval(function() {
+    var timerCountdown = setInterval(function () {
         timeRemain--;
         updateCountdownTimer();
-        if(timeRemain<=5){
-            elCountdownDiv.style.color="red";
+        if (timeRemain <= 5) {
+            elCountdownDiv.style.color = "red";
         }
-        if(timeRemain == 0) {
-          clearInterval(timerCountdown);
-        endQuiz();
+        if (timeRemain == 0) {
+            clearInterval(timerCountdown);
+            endQuiz();
         }
-      }, 1000);
+    }, 1000);
 }
 
-function updateCountdownTimer(){
-    var suffix=" seconds"
+function updateCountdownTimer() {
+    var suffix = " seconds"
 
-    if(timeRemain==1){suffix=" second"}
-    document.querySelector("#countdown-timer").textContent=timeRemain+suffix+" remaining";
+    if (timeRemain == 1) { suffix = " second" }
+    document.querySelector("#countdown-timer").textContent = timeRemain + suffix + " remaining";
 }
 
-function endQuiz(){
-    myState=2;
+function endQuiz() {
+    myState = 2;
     displayState();
 
     //update result page spans
-    elScore.textContent=timeRemain;
-    elCorrectQuestions.textContent=answersCorrect;
+    elScore.textContent = timeRemain;
+    elCorrectQuestions.textContent = answersCorrect;
 }
 
 document.querySelector("#start-quiz-button").addEventListener("click", startQuiz);
-elAnswers.addEventListener("click", function(event) {
+elAnswers.addEventListener("click", function (event) {
     var element = event.target;
-    
-    if(element.matches("li")){  
+
+    if (element.matches("li")) {
         //evaluate if the answer was correct
-        if(questions[currentQuestionNumber].correctAnswer==element.dataset.selection){
+        if (questions[currentQuestionNumber].correctAnswer == element.dataset.selection) {
             answersCorrect++;
-        }else{
-            timeRemain-=5;
+        } else {
+            timeRemain -= 5;
         }
 
         //navigate to the next question, or to the end of the quiz
-        if(currentQuestionNumber!=questions.length-1){
+        if (currentQuestionNumber != questions.length - 1) {
             currentQuestionNumber++;
             displayQuestion();
         } else {
-            myState=2;
+            myState = 2;
             endQuiz();
         }
     }
-  });
-document.querySelector("#submit-high-score").addEventListener("click", function() {
+});
+document.querySelector("#submit-high-score").addEventListener("click", function () {
     var highScores = [];
-    
-    //set object with high score
-    var currentScore = {
-        initials: document.querySelector("#playerInitials").value,
-        score: timeRemain
+    var playerInitials = document.querySelector("#playerInitials").value;
+    if (playerInitials.length>0) {
+        //set object with high score
+        var currentScore = {
+            initials: playerInitials,
+            score: timeRemain
+        }
+
+        //read existing high scores
+        var existingScores = localStorage.getItem("highScores");
+        if (existingScores != "") {
+            highScores = JSON.parse(existingScores) || [];
+        }
+
+        //add object to high scores
+        highScores.push(currentScore);
+
+        //sort the array from highest to lowest score
+        highScores.sort((a, b) => {
+            return b.score - a.score;
+        })
+
+        //store high scores
+        localStorage.setItem("highScores", JSON.stringify(highScores));
+
+        //navigate to high scores page
+        window.location.replace("highscores.html");
+    } else {
+        alert("You must enter initials to join the leaderboard!");
     }
-
-    //read existing high scores
-    var existingScores = localStorage.getItem("highScores");
-    if(existingScores!=""){
-        highScores = JSON.parse(existingScores) || [];
-    }   
-    
-    //add object to high scores
-    highScores.push(currentScore);
-
-    highScores.sort((a,b)=> {
-        return b.score - a.score;
-    })
-
-    //store high scores
-    localStorage.setItem("highScores", JSON.stringify(highScores));
-
-    //navigate to high scores page
-    window.location.replace("highscores.html");
 });
 
 
@@ -191,12 +196,12 @@ init();
 // WHEN the game is over
 // THEN I can save my initials and my score
 
-//start the quiz 
+//start the quiz
 //show intro with start button
 //on click, start timer
 //on timer, decrement counter
 //5 questions (?)
-//on answer, eval correct/incorrect - show right or wrong before moving 
+//on answer, eval correct/incorrect - show right or wrong before moving
 //on correct,(sound?)
 //on incorrect, deduct time (sound?)
 //score is remaining time at the end of test
