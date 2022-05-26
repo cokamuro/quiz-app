@@ -25,6 +25,9 @@ function init(){
 }
 
 function setupQuestions(){
+    //pushing individual question objects into the questions collection
+    //struct includes question text, an array of answers, and the array index
+    //of the correct answer
     var question = {
         text: "What are the units of time specified in the setInterval function?",
         answers: ["microseconds","seconds","milliseconds","minutes"],
@@ -38,21 +41,21 @@ function setupQuestions(){
     };
     addQuestion(question);
     question = {
-        text: "question 3",
-        answers: ["a","b","c","d"],
-        correctAnswer: 1
+        text: "You can nest objects within other objects",
+        answers: ["true", "false"],
+        correctAnswer: 0
     };
     addQuestion(question);
     question = {
-        text: "question 4",
-        answers: ["a","b","c","d"],
-        correctAnswer: 1
+        text: "A function that calls itself is",
+        answers: ["encaspulated","a lambda","lonely","recursive"],
+        correctAnswer: 3
     };
     addQuestion(question);
     question = {
-        text: "question 5",
-        answers: ["a","b","c","d"],
-        correctAnswer: 1
+        text: "The line termination character for lines of code in JavaScript is:",
+        answers: [";","}","/n",")"],
+        correctAnswer: 0
     };
     addQuestion(question);
 }
@@ -81,7 +84,6 @@ function displayQuestion(){
         //can evaluate if the selection was correct
         answer.dataset.selection=i;
         answer.textContent = currentQuestion.answers[i];
-
         elAnswers.appendChild(answer);
     }
 }
@@ -90,8 +92,15 @@ document.querySelector("#start-quiz-button").addEventListener("click", startQuiz
 elAnswers.addEventListener("click", function(event) {
     var element = event.target;
     
-    console.log(element);
     if(element.matches("li")){  
+        //evaluate if the answer was correct
+        if(questions[currentQuestionNumber].correctAnswer==element.dataset.selection){
+            alert("correct");
+        }else{
+            alert("incorrect");
+        }
+
+        //navigate to the next question, or to the end of the quiz
         if(currentQuestionNumber!=questions.length-1){
             currentQuestionNumber++;
             displayQuestion();
