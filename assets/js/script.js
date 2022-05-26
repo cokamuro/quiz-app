@@ -14,7 +14,8 @@ var elScore = document.querySelector("#score");
 var elCountdownDiv = document.querySelector("#countdown-div");
 
 function displayState() {
-
+    //this function manages the visibility of divs within my main document,
+    //based on the selected state
     elStart.style.display = 'none';
     elQuiz.style.display = 'none';
     elEnd.style.display = 'none';
@@ -24,7 +25,9 @@ function displayState() {
 }
 
 function init() {
+    //initializes based on starting displayState (0)
     displayState();
+    //populate question array
     setupQuestions();
 }
 
@@ -92,22 +95,36 @@ function displayQuestion() {
 }
 
 function startQuiz() {
+    //set state to active quiz (1)
     myState = 1;
+    //refresh screen based on selected state
     displayState();
+    //call timer display function to get initial readout before timer event fires
     updateCountdownTimer();
+    //populate the 0 array position question
     displayQuestion();
+
+    //timer function 
     var timerCountdown = setInterval(function () {
+        //check to make sure that the state is still in quiz (1)
         if (myState==1){
+            //decrement time remaining
             timeRemain--;
+            //update timer display on the page
             updateCountdownTimer();
+
             if (timeRemain <= 5) {
+                //change countdown display to red in the last 5 seconds
                 elCountdownDiv.style.color = "red";
             }
             if (timeRemain == 0) {
+                //time ran out.  shut down timer and call end quiz
                 clearInterval(timerCountdown);
                 endQuiz();
             }
         } else {
+            //if the state is no longer in quiz, as can happen if the questions are all completed
+            //shut down the timer
             clearInterval(timerCountdown);
         }
         
@@ -117,12 +134,15 @@ function startQuiz() {
 function updateCountdownTimer() {
     var suffix = " seconds"
 
+    //update timer display, and account for non-plural second (vs. seconds)
     if (timeRemain == 1) { suffix = " second" }
     document.querySelector("#countdown-timer").textContent = timeRemain + suffix + " remaining";
 }
 
 function endQuiz() {
+    //set state to end (2).  important for timer
     myState = 2;
+    //refresh display with current state
     displayState();
 
     //update result page spans
@@ -130,7 +150,10 @@ function endQuiz() {
     elCorrectQuestions.textContent = answersCorrect;
 }
 
+//start quiz event listener
 document.querySelector("#start-quiz-button").addEventListener("click", startQuiz);
+
+//event listener for dynamically created li elements
 elAnswers.addEventListener("click", function (event) {
     var element = event.target;
 
@@ -152,11 +175,15 @@ elAnswers.addEventListener("click", function (event) {
         }
     }
 });
+
+//event listener for submitting high score
 document.querySelector("#submit-high-score").addEventListener("click", function () {
     var highScores = [];
     var playerInitials = document.querySelector("#playerInitials").value+" ";
     
+    //account for blank value in localStorage
     if (playerInitials!==" ") {
+        //set initials to uppercase and trim leading/trailing spaces
         playerInitials=playerInitials.trim().toUpperCase();
         //set object with high score
         var currentScore = {
@@ -184,36 +211,10 @@ document.querySelector("#submit-high-score").addEventListener("click", function 
         //navigate to high scores page
         window.location.replace("highscores.html");
     } else {
+        //user must enter a value for initials
         alert("You must enter initials to join the leaderboard!");
     }
 });
 
-
+//start application
 init();
-
-// GIVEN I am taking a code quiz
-// WHEN I click the start button
-// THEN a timer starts and I am presented with a question (75 seconds)
-// WHEN I answer a question
-// THEN I am presented with another question
-// WHEN I answer a question incorrectly
-// THEN time is subtracted from the clock (15 seconds)
-// WHEN all questions are answered or the timer reaches 0
-// THEN the game is over
-// WHEN the game is over
-// THEN I can save my initials and my score
-
-//start the quiz
-//show intro with start button
-//on click, start timer
-//on timer, decrement counter
-//5 questions (?)
-//on answer, eval correct/incorrect - show right or wrong before moving
-//on correct,(sound?)
-//on incorrect, deduct time (sound?)
-//score is remaining time at the end of test
-//on end of timer
-//clear interval
-//display score
-//save initials
-//display high scores, prompt to start again or clear scores
